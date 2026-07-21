@@ -1,0 +1,35 @@
+# Citation metadata for the corpus. GitHub renders a "Cite this repository" button
+# from this file. After each Zenodo release, update `doi` and `version`.
+cff-version: 1.2.0
+message: >-
+  If you use the whole corpus, cite it as below. If you use a specific
+  subcorpus, cite that subcorpus's own DOI record (its creators are the
+  submitting researchers), using the recommended citation shown on the record.
+type: dataset
+title: "Non-Assisted Human Writing Corpus"
+authors:
+  # Project editors, in citation order. Individual subcorpus authors are
+  # credited on their subcorpus DOI records (edited-volume model).
+  - family-names: "Gayed"
+    given-names: "John Maurice"
+    affiliation: "Waseda University, Global Education Center"
+    orcid: "https://orcid.org/0000-0002-7028-3291"
+  - family-names: "Appel"
+    given-names: "Randy"
+    affiliation: "Waseda University, Global Education Center"
+    orcid: "https://orcid.org/0000-0001-7715-9560"
+  - family-names: "Carlon"
+    given-names: "May Kristine Jonson"
+    affiliation: "Waseda University, Global Education Center"
+    orcid: "https://orcid.org/0000-0002-7346-2332"
+version: "1.0"
+# doi: 10.5281/zenodo.XXXXXXX   # concept DOI, added after first Zenodo release
+date-released: "2026-XX-XX"     # set on release day
+license: CC-BY-NC-4.0
+repository-code: "https://github.com/REPLACE-GITHUB-USERNAME/REPLACE-REPO-NAME"
+keywords:
+  - corpus linguistics
+  - learner corpus
+  - non-assisted writing
+  - human-authored text
+  - language assessment

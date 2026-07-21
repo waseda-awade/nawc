@@ -1,0 +1,1200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/corpus/topsheet.schema.json",
+  "title": "Non-Assisted Human Writing Corpus - Institutional Submission Top Sheet",
+  "description": "Submission-level metadata for one collection condition. One top sheet per condition, not per session. Schema version 1.0.0-draft. Replace $id with the repository URL before release.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "submission",
+    "institution",
+    "subcorpus",
+    "attribution",
+    "ethics_legal",
+    "pii",
+    "writers",
+    "task",
+    "collection",
+    "processing",
+    "attachments",
+    "attestation",
+    "editorial_processing"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0-draft",
+      "description": "Version of this schema the submission was authored against."
+    },
+    "submission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "target_corpus_version"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "target_corpus_version": {
+          "type": "string",
+          "description": "Corpus release the submission is intended for, e.g. '1.1'.",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "resubmission_of": {
+          "type": "string",
+          "description": "Submission ID being corrected/replaced, if applicable. A resubmission is published as a new version of the SAME Zenodo record (using Zenodo's built-in versioning, the same mechanism used for whole-corpus releases): it receives its own version-specific DOI, the subcorpus's concept DOI continues to resolve to the latest version, and the prior version remains accessible and citable at its own version DOI."
+        }
+      }
+    },
+    "institution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "country",
+        "contact"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "department": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 code, e.g. 'JP'.",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "contact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "email"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "orcid": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
+            },
+            "role": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "subcorpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "language",
+        "genres_included"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short identifier, e.g. 'awade-2025'. Lowercase, hyphenated.",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "language": {
+          "type": "string",
+          "const": "eng",
+          "description": "ISO 639-3. Fixed to 'eng' for corpus v1.x; retained as a field for forward compatibility."
+        },
+        "local_task_name": {
+          "type": "string",
+          "description": "Local name(s) for the task(s) in this subcorpus, any language, e.g. '\u5c0f\u8ad6\u6587', 'AWADE expository/comparative/argumentative exams'. If multiple task types are included, list or describe them collectively here; per-task detail (prompts, rubrics) belongs in the attachments and the manifest."
+        },
+        "genres_included": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "List of genres/task types included in this subcorpus, e.g. ['expository', 'comparative', 'argumentative']. Free text -- not restricted to a fixed list, so new task types aren't blocked. Use short, consistent, lowercase values (they should roughly match the per-text 'genre' column in the manifest, which is what downstream researchers actually filter on). A single-genre subcorpus is just a one-item list."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "genre": {
+                "const": "other"
+              }
+            },
+            "required": [
+              "genre"
+            ]
+          },
+          "then": {
+            "required": [
+              "genre_other_description"
+            ]
+          }
+        }
+      ]
+    },
+    "ethics_legal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_type",
+        "approval_reference",
+        "consent_covers_redistribution",
+        "minors_included",
+        "license"
+      ],
+      "properties": {
+        "approval_type": {
+          "type": "string",
+          "enum": [
+            "irb_approval",
+            "ethics_committee_approval",
+            "documented_exemption"
+          ]
+        },
+        "approval_reference": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Approval or exemption reference number/identifier."
+        },
+        "consent_covers_redistribution": {
+          "type": "boolean",
+          "const": true,
+          "description": "Contributor attests that informed consent was obtained covering public redistribution and derivative research use under CC BY-NC 4.0. Determining and obtaining adequate consent is the contributing institution's own responsibility; corpus editors do not review or adjudicate consent adequacy."
+        },
+        "minors_included": {
+          "type": "boolean"
+        },
+        "guardian_consent_documented": {
+          "type": "boolean",
+          "description": "Required (and must be true) if minors_included is true."
+        },
+        "license": {
+          "type": "string",
+          "description": "Corpus-wide license, fixed by project decision (2026-07-07): CC BY-NC 4.0. Consent forms must name this license. Submissions granting any other license cannot validate.",
+          "const": "CC-BY-NC-4.0"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "minors_included": {
+                "const": true
+              }
+            },
+            "required": [
+              "minors_included"
+            ]
+          },
+          "then": {
+            "required": [
+              "guardian_consent_documented"
+            ],
+            "properties": {
+              "guardian_consent_documented": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pii": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "removed",
+        "method",
+        "replacement_convention"
+      ],
+      "properties": {
+        "removed": {
+          "type": "boolean",
+          "const": true
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "automated",
+            "manual_and_automated"
+          ]
+        },
+        "replacement_convention": {
+          "type": "string",
+          "description": "e.g. '<NAME>, <PLACE>, <INSTITUTION> placeholders'.",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "writers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "english_relationship",
+        "l1_backgrounds",
+        "recruitment"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "english_relationship": {
+          "type": "string",
+          "enum": [
+            "L1",
+            "L2",
+            "mixed"
+          ],
+          "description": "Writers' relationship to English for this cohort."
+        },
+        "l1_backgrounds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "List of L1s represented, ISO 639-3 codes preferred; 'unknown' permitted as a list item."
+        },
+        "proficiency_evidence": {
+          "type": "array",
+          "description": "Optional but strongly encouraged for L2 cohorts. One entry per evidence type available.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "framework",
+              "level_or_range"
+            ],
+            "properties": {
+              "framework": {
+                "type": "string",
+                "enum": [
+                  "CEFR",
+                  "TOEFL_iBT",
+                  "TOEIC",
+                  "IELTS",
+                  "EIKEN",
+                  "institutional_placement",
+                  "other"
+                ]
+              },
+              "framework_other_description": {
+                "type": "string"
+              },
+              "level_or_range": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_recency": {
+                "type": "string",
+                "enum": [
+                  "within_6_months",
+                  "within_1_year",
+                  "within_3_years",
+                  "older_or_unknown"
+                ],
+                "description": "Recency of the proficiency evidence relative to the writing date."
+              }
+            }
+          }
+        },
+        "age_range": {
+          "type": "string",
+          "description": "e.g. '18-22'."
+        },
+        "education_level": {
+          "type": "string",
+          "enum": [
+            "secondary",
+            "undergraduate",
+            "graduate",
+            "adult_education",
+            "mixed",
+            "other",
+            "unknown"
+          ]
+        },
+        "major_or_field": {
+          "type": "string"
+        },
+        "recruitment": {
+          "type": "string",
+          "enum": [
+            "required_coursework",
+            "operational_exam",
+            "volunteer_unpaid",
+            "volunteer_incentivized",
+            "other"
+          ],
+          "description": "Selection-bias documentation."
+        },
+        "recruitment_notes": {
+          "type": "string"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prompt_attached",
+        "prompt_reused",
+        "time_limit_minutes",
+        "revision_allowed",
+        "stakes"
+      ],
+      "properties": {
+        "prompt_attached": {
+          "type": "boolean",
+          "const": true,
+          "description": "Prompt(s) must be attached verbatim."
+        },
+        "prompt_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of prompts. If this subcorpus spans multiple genres/tasks, count all prompts across all of them -- use the manifest's prompt_id column to map each text to its specific prompt."
+        },
+        "prompt_reused": {
+          "type": "string",
+          "enum": [
+            "first_use",
+            "reused_across_sessions",
+            "reused_across_years",
+            "unknown"
+          ],
+          "description": "Prompt-leakage risk documentation."
+        },
+        "time_limit_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Writing time only, excluding separate planning time. Untimed writing is out of scope for v1.0."
+        },
+        "planning_time_minutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision_allowed": {
+          "type": "string",
+          "enum": [
+            "single_sitting_revision_within_session",
+            "multiple_drafts",
+            "no_revision"
+          ],
+          "description": "Multiple drafts across sessions substantially weaken condition control; permitted but flagged to users."
+        },
+        "word_count_requirement": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "target": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "enforced": {
+              "type": "string",
+              "enum": [
+                "enforced",
+                "advisory",
+                "none"
+              ]
+            }
+          }
+        },
+        "stakes": {
+          "type": "string",
+          "enum": [
+            "graded_coursework",
+            "high_stakes_exam",
+            "low_stakes_practice",
+            "research_only",
+            "research_incentivized"
+          ],
+          "description": "As announced to writers before writing."
+        },
+        "audience_specified": {
+          "type": "string"
+        }
+      }
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tier",
+        "in_person_attestation",
+        "composition_date_start",
+        "composition_date_end",
+        "single_condition_attestation",
+        "proctoring_description"
+      ],
+      "properties": {
+        "tier": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "description": "Closest reference pattern for how this condition was collected: 1 = handwritten; 2 = institutional machines with technical controls; 3 = personal devices. These are common reference patterns for describing conditions, not the only acceptable configurations -- if your setup doesn't map cleanly onto one, choose the closest and use proctoring_description to explain the actual conditions in full. Remote and self-attested collection remain excluded regardless of tier or logging; in-person supervision (in_person_attestation) is the one requirement that does not bend."
+        },
+        "in_person_attestation": {
+          "type": "boolean",
+          "const": true,
+          "description": "All texts were composed with a proctor/instructor physically present. Hard requirement across all tiers."
+        },
+        "composition_date_start": {
+          "type": "string",
+          "format": "date"
+        },
+        "composition_date_end": {
+          "type": "string",
+          "format": "date"
+        },
+        "sessions_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "single_condition_attestation": {
+          "type": "boolean",
+          "const": true,
+          "description": "This top sheet describes exactly one collection condition. Mixed conditions (e.g., overflow students on laptops) require separate top sheets."
+        },
+        "ai_prohibition_announced": {
+          "type": "string",
+          "enum": [
+            "yes_explicit",
+            "implied_by_exam_rules",
+            "no",
+            "unknown"
+          ],
+          "description": "Whether writers were explicitly told AI/internet assistance was prohibited."
+        },
+        "tier1_handwritten": {
+          "$ref": "#/$defs/tier1",
+          "description": "Optional supplementary detail if tier is 1 and this structure applies. Not required -- proctoring_description is the primary documentation; fill this in for whatever you know, and describe anything that doesn't fit these fields in proctoring_description or protocol_notes instead."
+        },
+        "tier2_institutional_machines": {
+          "$ref": "#/$defs/tier2",
+          "description": "Optional supplementary detail if tier is 2 and this structure applies. Not required -- proctoring_description is the primary documentation; fill this in for whatever you know, and describe anything that doesn't fit these fields in proctoring_description or protocol_notes instead."
+        },
+        "tier3_personal_devices": {
+          "$ref": "#/$defs/tier3",
+          "description": "Optional supplementary detail if tier is 3 and this structure applies. Not required -- proctoring_description is the primary documentation; fill this in for whatever you know, and describe anything that doesn't fit these fields in proctoring_description or protocol_notes instead."
+        },
+        "protocol_notes": {
+          "type": "string",
+          "description": "Optional. Free text for deviations, unusual circumstances, or context not captured elsewhere -- e.g., a session interrupted by a fire drill, a substitute proctor, unusual timing. SCOPE LIMIT: this field documents context that does NOT compromise a hard requirement (in_person_attestation, single_condition_attestation, composition dates, etc.). If a deviation means specific texts did NOT meet a hard requirement -- e.g., a school's absence policy let some students submit from home -- those specific texts must be EXCLUDED from this submission (not included with a note explaining the exception). Use this field to disclose the exclusion and its reason, e.g., 'N students submitted under the school's absence policy and were excluded from this dataset.' Editors review this field during submission review."
+        },
+        "proctoring_description": {
+          "type": "string",
+          "minLength": 30,
+          "description": "Required. Describe in full how proctoring/supervision was conducted for this condition -- who supervised, how, and what was and wasn't controlled. This is the corpus's primary acceptance criterion for collection conditions: submissions are accepted on transparent, complete documentation here, not on exactly matching one of the tier-specific checklists below. The structured tier1_handwritten / tier2_institutional_machines / tier3_personal_devices fields are optional supplementary detail -- fill in what applies and what you know; describe the rest here. A few complete sentences, not a one-word answer. See protocol_notes for deviations/exceptions on top of the baseline described here."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "tier": {
+                "const": 1
+              }
+            },
+            "required": [
+              "tier"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "tier2_institutional_machines"
+                  ]
+                },
+                {
+                  "required": [
+                    "tier3_personal_devices"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tier": {
+                "const": 2
+              }
+            },
+            "required": [
+              "tier"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "tier1_handwritten"
+                  ]
+                },
+                {
+                  "required": [
+                    "tier3_personal_devices"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tier": {
+                "const": 3
+              }
+            },
+            "required": [
+              "tier"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "tier1_handwritten"
+                  ]
+                },
+                {
+                  "required": [
+                    "tier2_institutional_machines"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional. Strongly encouraged when scores exist.",
+      "required": [
+        "rubric_attached",
+        "scale_description",
+        "raters_per_text"
+      ],
+      "properties": {
+        "rubric_attached": {
+          "type": "boolean"
+        },
+        "scale_description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "e.g. '0-5 holistic, half-points permitted'. If scale differs by genre/task within this subcorpus, describe each and which genre it applies to (or note the difference per-text in the manifest's notes column)."
+        },
+        "raters_per_text": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rater_training": {
+          "type": "string"
+        },
+        "reliability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "statistic",
+            "value"
+          ],
+          "properties": {
+            "statistic": {
+              "type": "string",
+              "enum": [
+                "QWK",
+                "ICC",
+                "exact_agreement_percent",
+                "adjacent_agreement_percent",
+                "krippendorff_alpha",
+                "pearson_r",
+                "other"
+              ]
+            },
+            "statistic_detail": {
+              "type": "string",
+              "description": "Model/variant, e.g. 'ICC(2,1), two-way random, absolute agreement'. Required in practice for ICC to be interpretable."
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        },
+        "adjudication": {
+          "type": "string"
+        },
+        "scores_operational": {
+          "type": "boolean",
+          "description": "True if scores counted toward grades/decisions; false if research-only."
+        }
+      }
+    },
+    "processing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "unicode_normalization",
+        "filename_convention_compliant",
+        "manifest_file"
+      ],
+      "properties": {
+        "encoding": {
+          "type": "string",
+          "const": "UTF-8"
+        },
+        "unicode_normalization": {
+          "type": "string",
+          "const": "NFC"
+        },
+        "normalization_applied": {
+          "type": "string",
+          "description": "Any transformations beyond encoding, e.g. 'line endings normalized to LF; nothing else'. 'none' if none."
+        },
+        "filename_convention_compliant": {
+          "type": "boolean",
+          "const": true
+        },
+        "manifest_file": {
+          "type": "string",
+          "description": "Filename of the per-text CSV manifest (columns defined in TOPSHEET_FORM.md), e.g. 'manifest.csv'.",
+          "pattern": "\\.csv$"
+        }
+      }
+    },
+    "attachments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prompt_files",
+        "ethics_document"
+      ],
+      "properties": {
+        "prompt_files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "rubric_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Rubric file(s), verbatim. If different genres/tasks in this subcorpus used different rubrics, attach each and make clear (by filename or the scoring notes) which applies to which genre."
+        },
+        "consent_form_template": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional. If provided, retained for reference; not reviewed by editors for adequacy. Not required -- the corpus relies on the contributor's attestation in ethics_legal, not on editorial review of the consent instrument itself."
+        },
+        "ethics_document": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Filename of the ethics approval/exemption document TRANSMITTED PRIVATELY to corpus maintainers with the submission. NOT published in the public repository (approval letters often contain signatures and third-party names); only the reference number in ethics_legal is public."
+        },
+        "other": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statement_accepted",
+        "attested_by",
+        "date"
+      ],
+      "properties": {
+        "statement_accepted": {
+          "type": "boolean",
+          "const": true,
+          "description": "Named contact attests: the collection conditions described are accurate; raw materials were transmitted unaltered; Tier 1 transcription (if any) followed the stated method verbatim; 'unknown' was used wherever the true state was not verified."
+        },
+        "attested_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "description": "SUBMITTER attestation. Scope: accuracy of the described conditions; that raw materials were transmitted to the editors unaltered; that Tier 1 transcription (if applicable) followed the stated method; and that 'unknown' was used wherever the true state was not verified. Fidelity of format conversion is attested separately by the editors in editorial_processing."
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "creators"
+      ],
+      "description": "Persons credited as AUTHORS of this subcorpus in its DOI record and citations, in citation order. Distinct from the administrative contact. These names appear as 'creators' on the subcorpus Zenodo record; attribution to them is a condition of the CC BY-NC 4.0 license.",
+      "properties": {
+        "creators": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "family_name",
+              "given_names",
+              "affiliation"
+            ],
+            "properties": {
+              "family_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "given_names": {
+                "type": "string",
+                "minLength": 1
+              },
+              "affiliation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "orcid": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
+              },
+              "ror": {
+                "type": "string",
+                "description": "ROR ID of the affiliation, e.g. https://ror.org/00ntfnx83",
+                "pattern": "^https://ror\\.org/0[a-z0-9]{8}$"
+              }
+            }
+          }
+        },
+        "preferred_citation": {
+          "type": "string",
+          "description": "Optional. If omitted, the corpus generates: Creators (Year). Subcorpus name (Version) [Data set]. In Editors (Eds.), Corpus name. Zenodo. DOI."
+        }
+      }
+    },
+    "editorial_processing": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Completed by CORPUS EDITORS, not the submitter. Records the conversion of submitted raw materials into corpus format. Submissions are published upon editorial acceptance; there is no pre-publication contributor sign-off step. Corrections are handled via resubmission (see submission.resubmission_of), published as a new version of the same Zenodo record via Zenodo's built-in versioning -- a new version-specific DOI is minted, the concept DOI moves to point at it, and the prior version remains accessible at its own version DOI.",
+      "required": [
+        "processed_by",
+        "processing_date",
+        "source_formats",
+        "conversion_tool",
+        "transformations_applied",
+        "topsheet_source"
+      ],
+      "properties": {
+        "processed_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "processing_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_formats": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "plain_text",
+              "docx",
+              "rtf",
+              "pdf_text",
+              "xlsx_cells",
+              "csv_cells",
+              "lms_export",
+              "other"
+            ]
+          },
+          "description": "Formats the texts arrived in. xlsx_cells/csv_cells = essay text transported inside spreadsheet cells (higher silent-mutation risk; prefer original files)."
+        },
+        "source_formats_other": {
+          "type": "string"
+        },
+        "conversion_tool": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "e.g. 'intake_convert.py'. Use 'none - files already compliant, verified by checker' only when no transformation occurred."
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "transformations_applied": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exhaustive list, e.g. 'docx paragraph extraction; NFC normalization; CRLF->LF; BOM removal. No other changes.' Manual copy-paste conversion is prohibited."
+        },
+        "source_checksums_recorded": {
+          "type": "boolean",
+          "description": "Whether SHA-256 checksums of the received raw files were recorded in the private processing log (recommended: true)."
+        },
+        "topsheet_source": {
+          "type": "string",
+          "enum": [
+            "machine_readable_from_submitter",
+            "transcribed_from_signed_form"
+          ],
+          "description": "Whether this submission.json was supplied by the submitter or transcribed by editors from a signed form. If transcribed, the signed original is archived privately with the ethics document."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "on_off_unknown": {
+      "type": "string",
+      "enum": [
+        "on",
+        "off",
+        "unknown"
+      ]
+    },
+    "tier1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transcriber_role",
+        "keying_method",
+        "errors_preserved_attestation",
+        "illegible_convention",
+        "deletions_policy",
+        "originals_retained_by_institution",
+        "originals_submitted"
+      ],
+      "properties": {
+        "transcriber_role": {
+          "type": "string",
+          "description": "Who transcribed, e.g. 'research assistant, not the course instructor'."
+        },
+        "transcriber_l1": {
+          "type": "string",
+          "description": "ISO 639-3 or 'unknown'."
+        },
+        "keying_method": {
+          "type": "string",
+          "enum": [
+            "double_keyed_reconciled",
+            "single_pass_with_verification_sample",
+            "single_pass"
+          ]
+        },
+        "verification_sample_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Required if keying_method is single_pass_with_verification_sample."
+        },
+        "errors_preserved_attestation": {
+          "type": "boolean",
+          "const": true,
+          "description": "Spelling, punctuation, and grammar errors were transcribed verbatim with no silent correction."
+        },
+        "illegible_convention": {
+          "type": "string",
+          "minLength": 1,
+          "description": "e.g. '<illegible> token per unreadable word'."
+        },
+        "deletions_policy": {
+          "type": "string",
+          "enum": [
+            "final_state_only",
+            "deletions_preserved_with_markup"
+          ],
+          "description": "Corpus default for v1.0 is final_state_only."
+        },
+        "originals_retained_by_institution": {
+          "type": "boolean",
+          "const": true,
+          "description": "Scans/originals retained locally for audit. Do NOT submit scans: handwriting is quasi-identifying."
+        },
+        "originals_submitted": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "keying_method": {
+                "const": "single_pass_with_verification_sample"
+              }
+            },
+            "required": [
+              "keying_method"
+            ]
+          },
+          "then": {
+            "required": [
+              "verification_sample_percent"
+            ]
+          }
+        }
+      ]
+    },
+    "tier2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isolation_type",
+        "isolation_verification",
+        "writing_software",
+        "spellcheck",
+        "autocorrect",
+        "predictive_text",
+        "grammar_tools"
+      ],
+      "properties": {
+        "isolation_type": {
+          "type": "string",
+          "enum": [
+            "network_level",
+            "application_level"
+          ],
+          "description": "network_level = machines air-gapped or network disabled; application_level = lockdown browser/kiosk on a networked machine."
+        },
+        "isolation_verification": {
+          "type": "string",
+          "enum": [
+            "physically_air_gapped",
+            "adapters_disabled",
+            "firewall_rules",
+            "lockdown_vendor_configuration",
+            "verified_by_it_staff",
+            "unknown"
+          ],
+          "description": "How the isolation claim was verified, not merely asserted."
+        },
+        "lockdown_software": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "description": "Required if isolation_type is application_level."
+        },
+        "writing_software": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "e.g. 'Notepad', 'MS Word 2021', 'Moodle essay field'."
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "spellcheck": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Permitted (standard word-processor function). Recorded for transparency."
+        },
+        "autocorrect": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Permitted (standard word-processor function). Recorded for transparency."
+        },
+        "grammar_tools": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Whether a grammar/writing-suggestion tool was used. AI-powered tools (e.g. Word's AI Editor, Grammarly) are EXCLUDED from the corpus's non-assisted claim -- known use is grounds for rejection or a clarification request during editorial review. If the contributor did not verify whether such a tool was used, 'unknown' is an acceptable, honest answer. Basic rule-based spelling/grammar highlighting bundled with the writing software is not the concern here; name the specific tool in grammar_tool_name so editors can assess it."
+        },
+        "text_retrieval_method": {
+          "type": "string",
+          "description": "Chain of custody: how texts were collected from machines, e.g. 'exported by IT staff to USB, no student access post-session'."
+        },
+        "grammar_tool_name": {
+          "type": "string",
+          "description": "Name of the grammar/writing-suggestion tool, if grammar_tools is 'on' or 'unknown' and a name is known (e.g. 'Grammarly', 'Word Editor', 'Word Editor -- classic spelling/grammar only, AI features off'). Free text: editors use this to judge whether an AI-powered tool was in use."
+        },
+        "predictive_text": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Whether the writing device/software offered predictive text (e.g., an on-screen keyboard, institution-issued tablet). Not assumed off just because the machine is institutional -- school-issued iPads are Tier 2, not Tier 3."
+        },
+        "predictive_text_note": {
+          "type": "string",
+          "description": "Optional. Describe the device(s) and prediction sophistication if predictive text was used by any students -- e.g., 'iPad default keyboard, word-level suggestions'; 'Android Gboard, sentence-level suggestions enabled for 4 of 22 students.' Sentence-level prediction (whole-phrase completion) is functionally closer to generative assistance than basic next-word completion, so this disclosure lets editors and downstream researchers assess it rather than treating all predictive text as uniformly equivalent. If usage varied by student, the per-text 'notes' column in the manifest can record which students."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "isolation_type": {
+                "const": "application_level"
+              }
+            },
+            "required": [
+              "isolation_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "lockdown_software"
+            ]
+          }
+        }
+      ]
+    },
+    "tier3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "devices_permitted",
+        "proctor_ratio",
+        "screens_visible_to_proctor",
+        "device_check_performed",
+        "spellcheck",
+        "autocorrect",
+        "predictive_text",
+        "grammar_tools",
+        "submission_method"
+      ],
+      "properties": {
+        "devices_permitted": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "laptop",
+              "tablet",
+              "phone"
+            ]
+          },
+          "description": "Device type(s) used. Predictive text and other input-facilitation features on any device are permitted and documented via the fields below; device type is recorded for transparency, not as a risk indicator."
+        },
+        "proctor_ratio": {
+          "type": "string",
+          "pattern": "^[0-9]+:[0-9]+$",
+          "description": "Proctors:writers, e.g. '1:25'."
+        },
+        "screens_visible_to_proctor": {
+          "type": "string",
+          "enum": [
+            "yes_all",
+            "partially",
+            "no",
+            "unknown"
+          ],
+          "description": "Seating/screen-orientation arrangement."
+        },
+        "device_check_performed": {
+          "type": "string",
+          "enum": [
+            "yes_before_writing",
+            "spot_checks_during",
+            "no",
+            "unknown"
+          ],
+          "description": "Any inspection of device configuration (open apps, assistance features)."
+        },
+        "spellcheck": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Permitted (standard word-processor function). Recorded for transparency."
+        },
+        "autocorrect": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Permitted (standard word-processor function). Recorded for transparency."
+        },
+        "predictive_text": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Permitted. Recorded for transparency, e.g. standard smartphone keyboard prediction."
+        },
+        "grammar_tools": {
+          "$ref": "#/$defs/on_off_unknown",
+          "description": "Whether a grammar/writing-suggestion tool was used. AI-powered tools (e.g. Word's AI Editor, Grammarly) are EXCLUDED from the corpus's non-assisted claim -- known use is grounds for rejection or a clarification request during editorial review. If the contributor did not verify whether such a tool was used, 'unknown' is an acceptable, honest answer. Basic rule-based spelling/grammar highlighting bundled with the writing software is not the concern here; name the specific tool in grammar_tool_name so editors can assess it."
+        },
+        "grammar_tool_name": {
+          "type": "string",
+          "description": "Name of the grammar/writing-suggestion tool, if grammar_tools is 'on' or 'unknown' and a name is known (e.g. 'Grammarly', 'Word Editor', 'Word Editor -- classic spelling/grammar only, AI features off'). Free text: editors use this to judge whether an AI-powered tool was in use."
+        },
+        "submission_method": {
+          "type": "string",
+          "description": "e.g. 'LMS upload at session end under proctor observation'."
+        },
+        "predictive_text_note": {
+          "type": "string",
+          "description": "Optional. Describe the device(s) and prediction sophistication if predictive text was used by any students -- e.g., 'iPad default keyboard, word-level suggestions'; 'Android Gboard, sentence-level suggestions enabled for 4 of 22 students.' Sentence-level prediction (whole-phrase completion) is functionally closer to generative assistance than basic next-word completion, so this disclosure lets editors and downstream researchers assess it rather than treating all predictive text as uniformly equivalent. If usage varied by student, the per-text 'notes' column in the manifest can record which students."
+        }
+      }
+    }
+  },
+  "$comment": "Assistance policy (v1.3): the corpus excludes generative AI/LLM assistance (including AI-powered writing tools such as Word's AI Editor and Grammarly), translation tools, and assistance from another person. Mechanical/input-facilitation features -- spellcheck, autocorrect, and standard word-processor functions -- are PERMITTED and documented for transparency. Predictive text is NOT blanket-permitted without comment: its use must be disclosed via predictive_text (on/off/unknown) and, when on or unknown, described via predictive_text_note (device and word-level vs. sentence-level sophistication) -- sentence-level prediction sits closer to generative assistance than basic word completion. Known use of an AI-powered grammar/rewriting tool is grounds for editorial rejection or a clarification request; 'unknown' is an acceptable answer when the contributor did not verify. These are editorial-review judgments (see grammar_tool_name, predictive_text_note), not automated schema-level rejections, since tool/device identification is free text."
+}

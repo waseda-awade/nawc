@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0.0-draft",
+  "submission": {
+    "date": "2026-07-07",
+    "target_corpus_version": "1.0"
+  },
+  "institution": {
+    "name": "Waseda University",
+    "department": "Global Education Center",
+    "country": "JP",
+    "contact": {
+      "name": "Randy Appel",
+      "email": "r_appel@waseda.jp",
+      "role": "AWADE Coordinator / Principal Investigator"
+    }
+  },
+  "subcorpus": {
+    "name": "awade-2025",
+    "language": "eng",
+    "local_task_name": "AWADE (Academic Writing and Discussion in English) course exams: expository, comparative, and argumentative writing tasks",
+    "genres_included": [
+      "expository",
+      "comparative",
+      "argumentative"
+    ]
+  },
+  "attribution": {
+    "creators": [
+      {
+        "family_name": "Appel",
+        "given_names": "Randy",
+        "affiliation": "Waseda University, Global Education Center",
+        "orcid": "0000-0001-7715-9560"
+      },
+      {
+        "family_name": "Gayed",
+        "given_names": "John Maurice",
+        "affiliation": "Waseda University, Global Education Center",
+        "orcid": "0000-0002-7028-3291"
+      },
+      {
+        "family_name": "Carlon",
+        "given_names": "May Kristine Jonson",
+        "affiliation": "Waseda University, Global Education Center",
+        "orcid": "0000-0002-7346-2332"
+      }
+    ]
+  },
+  "ethics_legal": {
+    "approval_type": "documented_exemption",
+    "approval_reference": "2025-HN028",
+    "consent_covers_redistribution": true,
+    "minors_included": false,
+    "license": "CC-BY-NC-4.0"
+  },
+  "pii": {
+    "removed": true,
+    "method": "manual_and_automated",
+    "replacement_convention": "<NAME>, <PLACE>, <INSTITUTION> placeholders"
+  },
+  "writers": {
+    "count": 120,
+    "english_relationship": "L2",
+    "l1_backgrounds": [
+      "jpn"
+    ],
+    "proficiency_evidence": [
+      {
+        "framework": "TOEFL_iBT",
+        "level_or_range": "61-90",
+        "evidence_recency": "within_1_year"
+      }
+    ],
+    "age_range": "18-22",
+    "education_level": "undergraduate",
+    "recruitment": "required_coursework",
+    "recruitment_notes": "Students enrolled in the AWADE (Academic Writing and Discussion in English) course at Waseda's Global Education Center. Data provision was voluntary and opt-in via an online consent questionnaire; students who declined were excluded from the dataset with no effect on their grade or credit."
+  },
+  "task": {
+    "prompt_attached": true,
+    "prompt_count": 1,
+    "prompt_reused": "first_use",
+    "time_limit_minutes": 40,
+    "planning_time_minutes": 5,
+    "revision_allowed": "single_sitting_revision_within_session",
+    "word_count_requirement": {
+      "min": 250,
+      "target": 300,
+      "enforced": "advisory"
+    },
+    "stakes": "low_stakes_practice"
+  },
+  "collection": {
+    "tier": 2,
+    "in_person_attestation": true,
+    "composition_date_start": "2026-05-11",
+    "composition_date_end": "2026-05-22",
+    "sessions_count": 6,
+    "single_condition_attestation": true,
+    "ai_prohibition_announced": "yes_explicit",
+    "tier2_institutional_machines": {
+      "isolation_type": "network_level",
+      "isolation_verification": "verified_by_it_staff",
+      "writing_software": {
+        "name": "Plain-text editor (gedit)",
+        "version": "46.x"
+      },
+      "spellcheck": "off",
+      "autocorrect": "off",
+      "grammar_tools": "off",
+      "text_retrieval_method": "Files exported by IT staff after each session; students had no post-session access.",
+      "predictive_text": "off"
+    },
+    "proctoring_description": "Sessions were proctored by the course instructor and one teaching assistant in a university computer lab. Students were seated with one empty seat between them; the instructor and TA circulated throughout each session and could see all screens from the front and sides of the room. Machines were network-isolated (see structured detail below) and IT staff confirmed isolation before each session began."
+  },
+  "scoring": {
+    "rubric_attached": true,
+    "scale_description": "0-5 holistic, whole points",
+    "raters_per_text": 2,
+    "rater_training": "One norming session on 20 benchmark essays prior to operational rating.",
+    "reliability": {
+      "statistic": "QWK",
+      "value": 0.78
+    },
+    "adjudication": "Third rater for discrepancies of 2 or more points; mean of two ratings otherwise.",
+    "scores_operational": false
+  },
+  "processing": {
+    "encoding": "UTF-8",
+    "unicode_normalization": "NFC",
+    "normalization_applied": "Line endings normalized to LF; nothing else.",
+    "filename_convention_compliant": true,
+    "manifest_file": "manifest.csv"
+  },
+  "attachments": {
+    "prompt_files": [
+      "prompt_01.txt"
+    ],
+    "rubric_files": [
+      "rubric_holistic_0-5.pdf"
+    ],
+    "consent_form_template": "AWADE_Research_Permission_Letter_2025.docx",
+    "ethics_document": "waseda_ethics_exemption_2025-HN028.pdf"
+  },
+  "attestation": {
+    "statement_accepted": true,
+    "attested_by": "EXAMPLE Contact, Principal Investigator",
+    "date": "2026-07-07"
+  },
+  "editorial_processing": {
+    "processed_by": "EXAMPLE Editor",
+    "processing_date": "2026-07-07",
+    "source_formats": [
+      "docx"
+    ],
+    "conversion_tool": {
+      "name": "intake_convert.py",
+      "version": "1.0.0"
+    },
+    "transformations_applied": "docx paragraph extraction; NFC normalization; CRLF->LF; trailing newline added. No other changes.",
+    "source_checksums_recorded": true,
+    "topsheet_source": "transcribed_from_signed_form"
+  }
+}
