@@ -26,7 +26,7 @@ version: "1.0"
 # doi: 10.5281/zenodo.XXXXXXX   # concept DOI, added after first Zenodo release
 date-released: "2026-XX-XX"     # set on release day
 license: CC-BY-NC-4.0
-repository-code: "https://github.com/REPLACE-GITHUB-USERNAME/REPLACE-REPO-NAME"
+repository-code: "https://github.com/waseda-awade/nawc"
 keywords:
   - corpus linguistics
   - learner corpus
