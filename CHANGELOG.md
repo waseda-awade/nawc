@@ -5,6 +5,34 @@ Text IDs are permanent; removed texts are listed here as tombstones.
 
 ## [Unreleased]
 ### Standard
+- Clarified that original raw submitted files (the Excel spreadsheet, individual
+  docx/txt files, whatever a contributor sent) are read-only inputs to
+  `tools/intake_convert.py` -- never modified, never committed -- and documented why
+  editors should retain their own copy privately rather than discard it after
+  conversion: the processing log's SHA-256 checksums are only meaningful if the file
+  they were computed from still exists, and a raw spreadsheet can carry an identifying
+  key column that has no place in git history. Added as a fourth item alongside the
+  three previously-documented never-committed artifacts in "What the published folder
+  actually looks like."
+- `tools/intake_convert.py` now automates matching scores to texts, closing a real gap:
+  previously nothing pulled score data in at all, and an editor would have had to
+  hand-match scores against auto-generated text IDs. Two paths: `--score-cols` pulls
+  score column(s) from the same spreadsheet as the essay text (xlsx input only);
+  `--scores-file` matches a separate CSV/XLSX against individual text/docx files by
+  original filename (tried exact, then extension-stripped) or against an xlsx's
+  `--id-col` value. Multiple score columns map to the manifest's documented
+  `score_1`/`score_2`/... convention. Unmatched texts and unmatched scores-file rows are
+  both surfaced explicitly (console output + processing log) rather than silently
+  dropped, so partial score coverage or a key typo is visible, not hidden. Tested against
+  both an xlsx-with-inline-scores scenario and a directory-of-files-plus-separate-scores
+  scenario, including the filename-extension fallback and missing/orphaned-row cases;
+  confirmed the existing no-scoring-args path is unchanged.
+- Documented the exact published folder structure in `docs/CONTRIBUTING.md` ("What the
+  published folder actually looks like"), with an explicit public/private breakdown --
+  clarifying that the signed top sheet, the ethics document, and the intake tool's
+  processing log/manifest skeleton are never committed, only their JSON transcription
+  and finished manifest are.
+### Standard
 - **Subcorpora now bundle by collection effort, not by task type.** `subcorpus.genre`
   (a required, closed-enum, single value) is replaced by `subcorpus.genres_included`
   (a required, open, multi-value list) plus a new required per-text `genre` column in
