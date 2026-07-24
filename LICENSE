@@ -13,14 +13,3 @@ means attribution to the creators named on each subcorpus's DOI record.
 Human-readable summary: https://creativecommons.org/licenses/by-nc/4.0/
 Full legal code:        https://creativecommons.org/licenses/by-nc/4.0/legalcode
 
---------------------------------------------------------------------------
-MAINTAINER NOTE (delete this block after completing the step below):
-Before the first public release, append the verbatim official legal code to
-this file so the full license text travels with offline copies:
-
-    curl -L https://creativecommons.org/licenses/by-nc/4.0/legalcode.txt >> LICENSE
-
-Then delete this note block. The notice above is legally sufficient (the
-license is incorporated by reference), but shipping the full text is best
-practice for datasets that will be redistributed offline.
---------------------------------------------------------------------------
